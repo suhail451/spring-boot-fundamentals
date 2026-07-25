@@ -40,17 +40,17 @@ public class StudentController {
 
 
     @GetMapping("students")
-    public ResponseEntity<List<Student>> getALL(){
-       List<Student> ourStudent= studentService.getALL();
+    public ResponseEntity<List<RequestDTO>> getALL(){
+       List<RequestDTO> ourStudent= studentService.getALL();
 
         return new ResponseEntity<>(ourStudent,HttpStatus.OK);
     }
 
 
     @PutMapping("students/{id}")
-    public ResponseEntity<Student> updateStudent(@Valid @PathVariable Long id, @RequestBody Student student){
+    public ResponseEntity<RequestDTO> updateStudent(@Valid @PathVariable Long id, @RequestBody RequestDTO student){
 
-        Student updatedStudent=studentService.updateStudent(id,student);
+        RequestDTO updatedStudent=studentService.updateStudent(id,student);
 
         return new ResponseEntity<>(updatedStudent,HttpStatus.OK);
 

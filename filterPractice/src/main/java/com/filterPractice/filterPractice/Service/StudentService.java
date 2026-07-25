@@ -1,16 +1,13 @@
 package com.filterPractice.filterPractice.Service;
 
-
-import ch.qos.logback.classic.boolex.StubEventEvaluator;
 import com.filterPractice.filterPractice.DTO.RequestDTO;
 import com.filterPractice.filterPractice.Entity.Student;
 import com.filterPractice.filterPractice.Repository.StudentRepo;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class StudentService {
@@ -34,7 +31,7 @@ public class StudentService {
 
         mydto.setName(saved.getName());
         mydto.setAge(saved.getAge());
-        mydto.setId((long) saved.getId());
+        mydto.setId(saved.getId());
 
 
         return mydto;
@@ -61,24 +58,42 @@ public class StudentService {
     }
 
 
+// Get ALL
 
-    public List<Student> getALL(){
+    public List<RequestDTO> getALL(){
 
         List<Student>  myList=studentRepo.findAll();
-        return myList;
+
+        return myList.stream()
+                .map(student -> {
+                    RequestDTO requestDTO=new RequestDTO();
+                    requestDTO.setId(student.getId());
+                    requestDTO.setName(student.getName());
+                    requestDTO.setAge(student.getAge());
+                    return requestDTO;
+
+                }).toList();
 
 
     }
 
-    public Student updateStudent(Long id,Student student){
+    public RequestDTO updateStudent(Long id,RequestDTO student){
 
-       Optional<Student> existing =studentRepo.findById(id);
+        Student existingStudent = studentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
 
-       Student  existingStudent=existing.get();
-       existingStudent.setName(student.getName());
-       existingStudent.setAge(student.getAge());
+        existingStudent.setName(student.getName());
+        existingStudent.setAge(student.getAge());
 
-        return studentRepo.save(existingStudent);
+        Student saved = studentRepo.save(existingStudent);
+
+        RequestDTO requestDTO=new RequestDTO();
+        requestDTO.setId(saved.getId());
+        requestDTO.setName(saved.getName());
+        requestDTO.setAge(saved.getAge());
+
+        return requestDTO;
+
 
     }
 
