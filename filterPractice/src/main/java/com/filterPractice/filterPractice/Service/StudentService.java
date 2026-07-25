@@ -2,6 +2,7 @@ package com.filterPractice.filterPractice.Service;
 
 
 import ch.qos.logback.classic.boolex.StubEventEvaluator;
+import com.filterPractice.filterPractice.DTO.RequestDTO;
 import com.filterPractice.filterPractice.Entity.Student;
 import com.filterPractice.filterPractice.Repository.StudentRepo;
 import org.springframework.http.HttpStatus;
@@ -20,21 +21,42 @@ public class StudentService {
         this.studentRepo = studentRepo;
     }
 
+//Create Student
 
-    public Student createStudent(Student student){
+    public RequestDTO createStudent(RequestDTO student){
 
-        Student saved =studentRepo.save(student);
+        Student mystudent=new Student();
+        mystudent.setName(student.getName());
+        mystudent.setAge(student.getAge());
 
-        return saved;
+        Student saved =studentRepo.save(mystudent);
+        RequestDTO mydto=new RequestDTO();
+
+        mydto.setName(saved.getName());
+        mydto.setAge(saved.getAge());
+        mydto.setId((long) saved.getId());
+
+
+        return mydto;
 
     }
 
 
-    public Student getStudent(Long id){
+// Get Student By id
+    public RequestDTO getStudent(Long id){
 
-        Student myStudent=studentRepo.getById(id);
+        Student myStudent = studentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
 
-        return myStudent;
+
+        RequestDTO requestDTO=new RequestDTO();
+
+        requestDTO.setId(myStudent.getId());
+        requestDTO.setName(myStudent.getName());
+        requestDTO.setAge(myStudent.getAge());
+
+
+        return requestDTO;
 
     }
 
@@ -48,7 +70,7 @@ public class StudentService {
 
     }
 
-    public Student updateStudent(long id,Student student){
+    public Student updateStudent(Long id,Student student){
 
        Optional<Student> existing =studentRepo.findById(id);
 
@@ -60,7 +82,7 @@ public class StudentService {
 
     }
 
-    public void deltebyid(long id){
+    public void deltebyid(Long id){
 
         studentRepo.deleteById(id);
 
