@@ -1,7 +1,11 @@
 package com.filterPractice.filterPractice.Service;
 
 import com.filterPractice.filterPractice.DTO.RequestDTO;
+import com.filterPractice.filterPractice.DTO.ResponseDTO;
 import com.filterPractice.filterPractice.Entity.Student;
+import com.filterPractice.filterPractice.GlobalException.DuplicateUpdate;
+import com.filterPractice.filterPractice.GlobalException.NameAlreadyExist;
+import com.filterPractice.filterPractice.GlobalException.StudentNotFound;
 import com.filterPractice.filterPractice.Repository.StudentRepo;
 
 import org.springframework.stereotype.Service;
@@ -20,14 +24,20 @@ public class StudentService {
 
 //Create Student
 
-    public RequestDTO createStudent(RequestDTO student){
+    public ResponseDTO createStudent(RequestDTO student){
+
+
+        if(studentRepo.existsByNameAndAge(student.getName(),student.getAge())){
+            throw new NameAlreadyExist(student.getName()+" Already Exist");
+        }
 
         Student mystudent=new Student();
         mystudent.setName(student.getName());
         mystudent.setAge(student.getAge());
 
+
         Student saved =studentRepo.save(mystudent);
-        RequestDTO mydto=new RequestDTO();
+        ResponseDTO mydto=new ResponseDTO();
 
         mydto.setName(saved.getName());
         mydto.setAge(saved.getAge());
@@ -40,64 +50,75 @@ public class StudentService {
 
 
 // Get Student By id
-    public RequestDTO getStudent(Long id){
+    public ResponseDTO getStudent(Long id){
 
         Student myStudent = studentRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+                .orElseThrow(() ->
+                        new StudentNotFound("Student Not Found"));
 
 
-        RequestDTO requestDTO=new RequestDTO();
 
-        requestDTO.setId(myStudent.getId());
-        requestDTO.setName(myStudent.getName());
-        requestDTO.setAge(myStudent.getAge());
+        ResponseDTO responseDTO=new ResponseDTO();
+
+        responseDTO.setId(myStudent.getId());
+        responseDTO.setName(myStudent.getName());
+        responseDTO.setAge(myStudent.getAge());
 
 
-        return requestDTO;
+        return responseDTO;
 
     }
 
 
 // Get ALL
 
-    public List<RequestDTO> getALL(){
+    public List<ResponseDTO> getALL(){
 
         List<Student>  myList=studentRepo.findAll();
 
         return myList.stream()
                 .map(student -> {
-                    RequestDTO requestDTO=new RequestDTO();
-                    requestDTO.setId(student.getId());
-                    requestDTO.setName(student.getName());
-                    requestDTO.setAge(student.getAge());
-                    return requestDTO;
+                    ResponseDTO responseDTO=new ResponseDTO();
+                    responseDTO.setId(student.getId());
+                    responseDTO.setName(student.getName());
+                    responseDTO.setAge(student.getAge());
+                    return responseDTO;
 
                 }).toList();
 
 
     }
 
-    public RequestDTO updateStudent(Long id,RequestDTO student){
+//    Update
+
+    public ResponseDTO updateStudent(Long id,RequestDTO student){
 
         Student existingStudent = studentRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+                .orElseThrow(() -> new StudentNotFound("Student Not Found"));
+        if (studentRepo.existsByNameAndAgeAndIdNot(
+                student.getName(),
+                student.getAge(),
+                id)) {
 
+            throw new DuplicateUpdate(
+                    "A student with the same name and age already exists.");
+        }
         existingStudent.setName(student.getName());
         existingStudent.setAge(student.getAge());
 
         Student saved = studentRepo.save(existingStudent);
 
-        RequestDTO requestDTO=new RequestDTO();
-        requestDTO.setId(saved.getId());
-        requestDTO.setName(saved.getName());
-        requestDTO.setAge(saved.getAge());
+        ResponseDTO responseDTO=new ResponseDTO();
+        responseDTO.setId(saved.getId());
+        responseDTO.setName(saved.getName());
+        responseDTO.setAge(saved.getAge());
 
-        return requestDTO;
+        return responseDTO;
 
 
     }
 
-    public void deltebyid(Long id){
+    public void deleteById(Long id){
 
         studentRepo.deleteById(id);
 

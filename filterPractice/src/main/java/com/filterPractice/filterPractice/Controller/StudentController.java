@@ -2,15 +2,13 @@ package com.filterPractice.filterPractice.Controller;
 
 
 import com.filterPractice.filterPractice.DTO.RequestDTO;
-import com.filterPractice.filterPractice.Entity.Student;
+import com.filterPractice.filterPractice.DTO.ResponseDTO;
 import com.filterPractice.filterPractice.Service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.OutputStream;
 import java.util.List;
 
 @RestController
@@ -24,33 +22,33 @@ public class StudentController {
 
 
     @PostMapping("students")
-    public ResponseEntity<RequestDTO> createStudent(@Valid @RequestBody RequestDTO student){
-        RequestDTO saved = studentService.createStudent(student);
+    public ResponseEntity<ResponseDTO> createStudent(@Valid @RequestBody RequestDTO student){
+        ResponseDTO saved = studentService.createStudent(student);
 
         return new ResponseEntity<>(saved,HttpStatus.CREATED);
     }
 
     @GetMapping("students/{id}")
-    public ResponseEntity<RequestDTO> getStudent(@PathVariable Long id){
+    public ResponseEntity<ResponseDTO> getStudent(@PathVariable Long id){
 
-        RequestDTO myStudent=studentService.getStudent(id);
+        ResponseDTO myStudent=studentService.getStudent(id);
 
         return new ResponseEntity<>(myStudent,HttpStatus.OK);
     }
 
 
     @GetMapping("students")
-    public ResponseEntity<List<RequestDTO>> getALL(){
-       List<RequestDTO> ourStudent= studentService.getALL();
+    public ResponseEntity<List<ResponseDTO>> getALL(){
+       List<ResponseDTO> ourStudent= studentService.getALL();
 
         return new ResponseEntity<>(ourStudent,HttpStatus.OK);
     }
 
 
     @PutMapping("students/{id}")
-    public ResponseEntity<RequestDTO> updateStudent(@Valid @PathVariable Long id, @RequestBody RequestDTO student){
+    public ResponseEntity<ResponseDTO> updateStudent(@Valid @PathVariable Long id, @RequestBody RequestDTO student){
 
-        RequestDTO updatedStudent=studentService.updateStudent(id,student);
+        ResponseDTO updatedStudent=studentService.updateStudent(id,student);
 
         return new ResponseEntity<>(updatedStudent,HttpStatus.OK);
 
@@ -61,7 +59,7 @@ public class StudentController {
     @DeleteMapping("students/{id}")
     public ResponseEntity<Void>  deletedByID( @PathVariable Long id){
 
-        studentService.deltebyid(id);
+        studentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
 

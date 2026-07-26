@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 public class RequestDTO {
 
 
-    private Long id;
+
 
     @NotBlank
     private String name;
@@ -23,19 +23,13 @@ public class RequestDTO {
     public RequestDTO() {
     }
 
-    public RequestDTO(Long id, String name, int age) {
-        this.id=id;
+    public RequestDTO( String name, int age) {
+
         this.name = name;
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public @NotBlank String getName() {
         return name;
