@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(NameAlreadyExist.class)
     public ResponseEntity<String> handleNameAlreadyExist(NameAlreadyExist ex){
-        return ResponseEntity.status(403).body(ex.getMessage());
+        return ResponseEntity.status(409).body(ex.getMessage());
 
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateUpdate.class)
     public ResponseEntity<String> handleDuplicate(DuplicateUpdate ex){
-        return ResponseEntity.status(403).body(ex.getMessage());
+        return ResponseEntity.status(409).body(ex.getMessage());
     }
 
 }

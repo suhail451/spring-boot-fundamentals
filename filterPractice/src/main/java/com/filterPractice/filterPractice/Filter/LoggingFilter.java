@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class filter implements Filter {
+public class LoggingFilter implements Filter {
 
 
     private final HttpServletResponse httpServletResponse;
 
-    public filter(HttpServletResponse httpServletResponse) {
+    public LoggingFilter(HttpServletResponse httpServletResponse) {
         this.httpServletResponse = httpServletResponse;
     }
 
