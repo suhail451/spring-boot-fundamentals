@@ -19,13 +19,10 @@ public class LoginController {
 
    @GetMapping("login")
     public String loginUser(@RequestBody RegisterEntity registerEntity){
-     if(
-     loginService.loginUser(registerEntity)){
 
-     return registerEntity.getName()+" is Logged in :";}
+         String token=loginService.loginUser(registerEntity);
+         return "Access Token \n"+token;
 
-     return "Password not valid!";
- }
-
+}
 
 }

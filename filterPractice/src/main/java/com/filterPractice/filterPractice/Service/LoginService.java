@@ -14,22 +14,27 @@ public class LoginService {
 
      final RegisterRepo registerRepo;
      final PasswordEncoder passwordEncoder;
+     final JwtService jwtService;
 
 
-    public LoginService(RegisterRepo registerRepo, PasswordEncoder passwordEncoder) {
+    public LoginService(RegisterRepo registerRepo, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.registerRepo = registerRepo;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public boolean loginUser(RegisterEntity registerEntity){
+    public String loginUser(RegisterEntity registerEntity){
 
         RegisterEntity user=registerRepo.findByName(registerEntity.getName());
-
+        if (user == null) {
+            throw new StudentNotFound("User not found");
+        }
         if(!passwordEncoder.matches(registerEntity.getPassword(),user.getPassword())){
-               return false;
+               return "password incorrect";
         }
 
-        return true;
+         return jwtService.generateToken(registerEntity.getName());
+
 
     }
 
