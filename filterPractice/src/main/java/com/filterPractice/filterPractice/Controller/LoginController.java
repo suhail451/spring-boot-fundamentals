@@ -17,7 +17,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-   @GetMapping("login")
+   @GetMapping("/login")
     public String loginUser(@RequestBody RegisterEntity registerEntity){
 
          String token=loginService.loginUser(registerEntity);

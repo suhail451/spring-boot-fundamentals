@@ -1,6 +1,8 @@
 package com.filterPractice.filterPractice.Service;
 
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,5 +37,52 @@ public class JwtService {
 
 
     }
+
+
+    public Claims extractAllClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+    }
+
+    public String extractUsername(String token){
+       return extractAllClaims(token).getSubject();
+
+
+    }
+
+    public Date extractExpiration(String token){
+
+        return extractAllClaims(token).getExpiration();
+
+    }
+
+    public boolean isTokenExpired(String token){
+        try{
+            return extractExpiration(token).before(new Date());
+
+        }
+        catch (ExpiredJwtException e){
+            return true;
+
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+
+    public boolean validateToken(String username,String token){
+
+        String extractUsername=extractUsername(token);
+        return extractUsername.equals(username) && !isTokenExpired(token);
+    }
+
+
+
+
+
 
 }

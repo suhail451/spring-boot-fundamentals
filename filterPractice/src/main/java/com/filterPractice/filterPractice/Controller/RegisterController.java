@@ -16,7 +16,7 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public String registerUser(@RequestBody RegisterEntity registerEntity){
 
         return registerService.registerStudent(registerEntity)+" Registerd successfully";
